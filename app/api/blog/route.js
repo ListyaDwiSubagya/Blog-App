@@ -1,31 +1,63 @@
 import { ConnectDB } from "@/lib/config/db";
-import {writeFile} from 'fs/promises'
+import BlogModel from "@/lib/models/BlogModel";
+import { writeFile } from "fs/promises";
+import { NextResponse } from "next/server";
 
-const { NextResponse } = require("next/server");
-
-const LoadDB = async () => {
-    await ConnectDB
+export async function GET(request) {
+  try {
+    await ConnectDB();
+    return NextResponse.json({ msg: "API WORKING" });
+  } catch (error) {
+    console.error("Error connecting to database:", error);
+    return NextResponse.json({ success: false, msg: "Failed to connect to DB" });
+  }
 }
 
-LoadDB();
-
-export async function GET(request){
-
-    return NextResponse.json({msg:"API WORKING"})
-}
-
-export async function POST(request){
+export async function POST(request) {
+  try {
+    await ConnectDB();
 
     const formData = await request.formData();
     const timestamp = Date.now();
 
-    const image = formData.get('image');
+    // Handle image upload
+    const image = formData.get("image");
+    if (!image) {
+      throw new Error("Image is required");
+    }
     const imageByteData = await image.arrayBuffer();
-    const buffer = Buffer.from(imageByteData)
-    const path = `./public/${timestamp}_${image.name}`
+    const buffer = Buffer.from(imageByteData);
+    const path = `./public/${timestamp}_${image.name}`;
     await writeFile(path, buffer);
-    const imgUrl = `/${timestamp}_${image.name}`
-    console.log(imgUrl);
-    return NextResponse.json({imgUrl})
+    const imgUrl = `/${timestamp}_${image.name}`;
 
+    // Collect blog data
+    const blogData = {
+      title: formData.get("title"),
+      description: formData.get("description"),
+      category: formData.get("category"),
+      author: formData.get("author"),
+      image: imgUrl,
+      authorImg: formData.get("authorImg"),
+    };
+
+    // Validate required fields
+    if (
+      !blogData.title ||
+      !blogData.description ||
+      !blogData.category ||
+      !blogData.author
+    ) {
+      throw new Error("All required fields must be provided");
+    }
+
+    // Save blog to database
+    await BlogModel.create(blogData);
+    console.log("Blog Saved");
+
+    return NextResponse.json({ success: true, msg: "Blog Added" });
+  } catch (error) {
+    console.error("Error adding blog:", error);
+    return NextResponse.json({ success: false, msg: error.message });
+  }
 }
