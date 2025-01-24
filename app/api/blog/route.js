@@ -3,16 +3,21 @@ import BlogModel from "@/lib/models/BlogModel";
 import { writeFile } from "fs/promises";
 import { NextResponse } from "next/server";
 
+// API Endpoint to get all blog
 export async function GET(request) {
+
+    const blogs = await BlogModel.find({});
+
   try {
     await ConnectDB();
-    return NextResponse.json({ msg: "API WORKING" });
+    return NextResponse.json({blogs});
   } catch (error) {
     console.error("Error connecting to database:", error);
     return NextResponse.json({ success: false, msg: "Failed to connect to DB" });
   }
 }
 
+// API Endpoint for uploading blog
 export async function POST(request) {
   try {
     await ConnectDB();
