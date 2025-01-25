@@ -1,19 +1,18 @@
 import { ConnectDB } from "@/lib/config/db";
 import BlogModel from "@/lib/models/BlogModel";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
+import { existsSync } from "fs";
 import { NextResponse } from "next/server";
 
 // API Endpoint to get all blog
 export async function GET(request) {
-
-    const blogs = await BlogModel.find({});
-
   try {
     await ConnectDB();
-    return NextResponse.json({blogs});
+    const blogs = await BlogModel.find({});
+    return NextResponse.json({ blogs });
   } catch (error) {
     console.error("Error connecting to database:", error);
-    return NextResponse.json({ success: false, msg: "Failed to connect to DB" });
+    return NextResponse.json({ success: false, msg: "Failed to fetch blogs" });
   }
 }
 
@@ -28,11 +27,18 @@ export async function POST(request) {
     // Handle image upload
     const image = formData.get("image");
     if (!image) {
-      throw new Error("Image is required");
+      return NextResponse.json({ success: false, msg: "Image is required" });
     }
+
     const imageByteData = await image.arrayBuffer();
     const buffer = Buffer.from(imageByteData);
-    const path = `./public/${timestamp}_${image.name}`;
+
+    const publicPath = "./public";
+    if (!existsSync(publicPath)) {
+      await mkdir(publicPath);
+    }
+
+    const path = `${publicPath}/${timestamp}_${image.name}`;
     await writeFile(path, buffer);
     const imgUrl = `/${timestamp}_${image.name}`;
 
@@ -47,22 +53,17 @@ export async function POST(request) {
     };
 
     // Validate required fields
-    if (
-      !blogData.title ||
-      !blogData.description ||
-      !blogData.category ||
-      !blogData.author
-    ) {
-      throw new Error("All required fields must be provided");
+    if (!blogData.title || !blogData.description || !blogData.category || !blogData.author) {
+      return NextResponse.json({ success: false, msg: "All required fields must be provided" });
     }
 
     // Save blog to database
     await BlogModel.create(blogData);
-    console.log("Blog Saved");
+    console.log("Blog saved to database");
 
-    return NextResponse.json({ success: true, msg: "Blog Added" });
+    return NextResponse.json({ success: true, msg: "Blog added" });
   } catch (error) {
     console.error("Error adding blog:", error);
-    return NextResponse.json({ success: false, msg: error.message });
+    return NextResponse.json({ success: false, msg: error.message || "Failed to add blog" });
   }
 }
