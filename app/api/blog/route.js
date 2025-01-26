@@ -6,10 +6,18 @@ import { NextResponse } from "next/server";
 
 // API Endpoint to get all blog
 export async function GET(request) {
+  
   try {
     await ConnectDB();
-    const blogs = await BlogModel.find({});
-    return NextResponse.json({ blogs });
+    const blogId = request.nextUrl.searchParams.get("id")
+    if (blogId) {
+      const blog = await BlogModel.findById(blogId);
+      return NextResponse.json(blog);
+    }
+    else {
+      const blogs = await BlogModel.find({});
+      return NextResponse.json({ blogs });
+    }
   } catch (error) {
     console.error("Error connecting to database:", error);
     return NextResponse.json({ success: false, msg: "Failed to fetch blogs" });
