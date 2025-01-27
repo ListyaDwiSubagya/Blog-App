@@ -1,1 +1,7 @@
 node_modules
+
+# SQL Server files
+*.mdf
+*.ldf
+
+.next/
