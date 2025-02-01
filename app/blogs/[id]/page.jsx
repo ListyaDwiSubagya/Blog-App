@@ -43,19 +43,7 @@ const page = ({params}) => {
     </div>
     <div className='mx-5 max-w-[800px] md:mx-auto mt-[-100px] mb-10'>
       <Image className='border-4 border-white' src={data.image} width={1280} height={720} alt=''/>
-      <h1 className='my-8 text-[26px] font-semibold'>Introduction:</h1>
-      <p>{data.description}</p>
-      <h3 className='my-5 text-[18px] font-semibold'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui necessitatibus nesciunt consectetur voluptate libero eaque?</h3>
-      <p className='my-3'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est aliquam amet dolorum consectetur quibusdam illum. Similique, laudantium id? Impedit assumenda iusto provident quaerat, vero minima vitae recusandae non eaque nesciunt.</p>
-      <p className='my-3'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est aliquam amet dolorum consectetur quibusdam illum. Similique, laudantium id? Impedit assumenda iusto provident quaerat, vero minima vitae recusandae non eaque nesciunt.</p>
-      <h3 className='my-5 text-[18px] font-semibold'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui necessitatibus nesciunt consectetur voluptate libero eaque?</h3>
-      <p className='my-3'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est aliquam amet dolorum consectetur quibusdam illum. Similique, laudantium id? Impedit assumenda iusto provident quaerat, vero minima vitae recusandae non eaque nesciunt.</p>
-      <p className='my-3'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est aliquam amet dolorum consectetur quibusdam illum. Similique, laudantium id? Impedit assumenda iusto provident quaerat, vero minima vitae recusandae non eaque nesciunt.</p>
-      <h3 className='my-5 text-[18px] font-semibold'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui necessitatibus nesciunt consectetur voluptate libero eaque?</h3>
-      <p className='my-3'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est aliquam amet dolorum consectetur quibusdam illum. Similique, laudantium id? Impedit assumenda iusto provident quaerat, vero minima vitae recusandae non eaque nesciunt.</p>
-      <p className='my-3'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est aliquam amet dolorum consectetur quibusdam illum. Similique, laudantium id? Impedit assumenda iusto provident quaerat, vero minima vitae recusandae non eaque nesciunt.</p>
-      <h3 className='my-5 text-[18px] font-semibold'>Conclution</h3>
-      <p className='my-3'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est aliquam amet dolorum consectetur quibusdam illum. Similique, laudantium id? Impedit assumenda iusto provident quaerat, vero minima vitae recusandae non eaque nesciunt.</p>
+      <div className='blog-content' dangerouslySetInnerHTML={{__html:data.description}}></div>
       <div className='my-24'>
         <p className='text-black font-semibold my-4'>Share this article on social media</p>
         <div className='flex'>
